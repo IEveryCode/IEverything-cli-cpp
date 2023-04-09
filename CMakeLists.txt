@@ -5,7 +5,10 @@ project(lEver)
 set(CMAKE_CXX_STANDARD 17)
 
 # 设置引用库
-include_directories(src/client/ws)
+
+include_directories(lib)
+include_directories(src/client)
+include_directories(src/base)
 include_directories( lib )
 # 导入cpp源文件
 file(GLOB_RECURSE SOURCES_SRC src/*.cpp)
