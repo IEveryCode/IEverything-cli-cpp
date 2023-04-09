@@ -181,7 +181,7 @@ public:
      * Get maximum message size. Maximum message size determines the point at which the
      * processor will fail a connection with the message_too_big protocol error.
      *
-     * The default is retrieved from the max_message_size value from the template config
+     * The default is retrieved from the max_message_size value from the template Config
      *
      * @since 0.3.0
      */
@@ -194,7 +194,7 @@ public:
      * Set maximum message size. Maximum message size determines the point at which the
      * processor will fail a connection with the message_too_big protocol error.
      *
-     * The default is retrieved from the max_message_size value from the template config
+     * The default is retrieved from the max_message_size value from the template Config
      *
      * @since 0.3.0
      *

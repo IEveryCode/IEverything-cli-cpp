@@ -405,7 +405,7 @@ public:
      * handler is called whenever a pong control frame is not received with the
      * configured timeout period after the application sends a ping.
      *
-     * The config setting `timeout_pong` controls the length of the timeout
+     * The Config setting `timeout_pong` controls the length of the timeout
      * period. It is specified in milliseconds.
      *
      * This can be used to probe the health of the remote endpoint's WebSocket
@@ -488,8 +488,8 @@ public:
      * Connections that time out will have their fail handlers called with the
      * open_handshake_timeout error code.
      *
-     * The default value is specified via the compile time config value
-     * 'timeout_open_handshake'. The default value in the core config
+     * The default value is specified via the compile time Config value
+     * 'timeout_open_handshake'. The default value in the core Config
      * is 5000ms. A value of 0 will disable the timer entirely.
      *
      * To be effective, the transport you are using must support timers. See
@@ -512,8 +512,8 @@ public:
      * Connections that time out will have their close handlers called with the
      * close_handshake_timeout error code.
      *
-     * The default value is specified via the compile time config value
-     * 'timeout_close_handshake'. The default value in the core config
+     * The default value is specified via the compile time Config value
+     * 'timeout_close_handshake'. The default value in the core Config
      * is 5000ms. A value of 0 will disable the timer entirely.
      *
      * To be effective, the transport you are using must support timers. See
@@ -533,8 +533,8 @@ public:
      *
      * Pong responses that time out will have the pong timeout handler called.
      *
-     * The default value is specified via the compile time config value
-     * 'timeout_pong'. The default value in the core config
+     * The default value is specified via the compile time Config value
+     * 'timeout_pong'. The default value in the core Config
      * is 5000ms. A value of 0 will disable the timer entirely.
      *
      * To be effective, the transport you are using must support timers. See

@@ -240,7 +240,7 @@ public:
     /// Set the proxy timeout duration (exception free)
     /**
      * Duration is in milliseconds. Default value is based on the transport
-     * config
+     * Config
      *
      * @param duration The number of milliseconds to wait before aborting the
      * proxy connection.

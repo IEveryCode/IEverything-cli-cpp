@@ -147,7 +147,7 @@ public:
 
                 if (neg_ret.first) {
                     // negotiation offer failed. Do nothing. We will continue
-                    // searching for a permessage-deflate config that succeeds
+                    // searching for a permessage-deflate Config that succeeds
                     continue;
                 }
 

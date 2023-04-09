@@ -763,7 +763,7 @@ void connection<config>::handle_transport_init(lib::error_code const & ec) {
         this->read_handshake(1);
     } else {
         // We are a client. Set the processor to the version specified in the
-        // config file and send a handshake request.
+        // Config file and send a handshake request.
         m_internal_state = istate::WRITE_HTTP_REQUEST;
         m_processor = get_processor(config::client_version);
         this->send_http_request();
@@ -1015,7 +1015,7 @@ void connection<config>::handle_read_frame(lib::error_code const & ec,
     }
 
     // Boundaries checking. TODO: How much of this should be done?
-    /*if (bytes_transferred > config::connection_read_buffer_size) {
+    /*if (bytes_transferred > Config::connection_read_buffer_size) {
         m_elog->write(log::elevel::fatal,"Fatal boundaries checking error");
         this->terminate(make_error_code(error::general));
         return;
@@ -1118,8 +1118,8 @@ void connection<config>::read_frame() {
         // Need to determine if requesting 1 byte or the exact number of bytes
         // is better here. 1 byte lets us be a bit more responsive at a
         // potential expense of additional runs through handle_read_frame
-        /*(m_processor->get_bytes_needed() > config::connection_read_buffer_size ?
-         config::connection_read_buffer_size : m_processor->get_bytes_needed())*/
+        /*(m_processor->get_bytes_needed() > Config::connection_read_buffer_size ?
+         Config::connection_read_buffer_size : m_processor->get_bytes_needed())*/
         1,
         m_buf,
         config::connection_read_buffer_size,
@@ -1983,7 +1983,7 @@ void connection<config>::process_control_frame(typename config::message_type::pt
             s.str("");
             if (config::drop_on_protocol_error) {
                 s << "Received invalid close code " << m_remote_close_code
-                  << " dropping connection per config.";
+                  << " dropping connection per Config.";
                 m_elog->write(log::elevel::devel,s.str());
                 this->terminate(ec);
             } else {
@@ -2003,7 +2003,7 @@ void connection<config>::process_control_frame(typename config::message_type::pt
         if (ec) {
             if (config::drop_on_protocol_error) {
                 m_elog->write(log::elevel::devel,
-                    "Received invalid close reason. Dropping connection per config");
+                    "Received invalid close reason. Dropping connection per Config");
                 this->terminate(ec);
             } else {
                 m_elog->write(log::elevel::devel,

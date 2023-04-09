@@ -39,7 +39,7 @@
 
 namespace websocketpp {
 
-/// Client endpoint role based on the given config
+/// Client endpoint role based on the given Config
 /**
  *
  */

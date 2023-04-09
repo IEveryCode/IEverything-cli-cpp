@@ -67,7 +67,7 @@
 namespace websocketpp {
 namespace config {
 
-/// Client config with iostream transport
+/// Client Config with iostream transport
 struct core_client {
     typedef core_client type;
 
@@ -288,7 +288,7 @@ struct core_client {
     //static const bool autonegotiate_compression = false;
 };
 
-} // namespace config
+} // namespace Config
 } // namespace websocketpp
 
 #endif // WEBSOCKETPP_CONFIG_CORE_CLIENT_HPP
