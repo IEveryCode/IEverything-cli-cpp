@@ -16,12 +16,38 @@ file(GLOB_RECURSE SOURCES_LIB lib/*.cpp)
 # 链接源文件表
 SET( SOURCE_DATA ${SOURCES_SRC} ${SOURCES_LIB})
 
+
 # 链接库
+# ===================icu=========================
+#LINK_LIBRARIES(
+#        -licuuc
+#        -licuio
+#        -licuin
+#        -licudt
+#        -licutu
+#)
+# data, i18n, io, le, lx, test, tu and uc
+# find_package(ICU REQUIRED data)
+# target_link_libraries(lEver ${ICU_LIBRARIES})
+# ===================icu=========================
+# ===================boost=========================
+find_package(Boost REQUIRED COMPONENTS
+        # regex
+        filesystem
+        )
+if(NOT Boost_FOUND)
+    message("Not found Boost")
+endif ()
+include_directories(${Boost_INCLUDE_DIRS})
+
+# ===================boost=========================
+
 if(CMAKE_HOST_UNIX)
     # UNIX
 elseif(CMAKE_HOST_WIN32)
     # WINDOWS
-
+    # 解决中文乱码
+    add_compile_options(-fexec-charset=GBK -finput-charset=UTF-8)
     # 在gcc/g++或ld中加上这个参数, 就可以不用libgcc_s_dw2-1.dll
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc")
     # 在g++或ld中加上这个参数, 就可以不用libstdc++-6.dll
@@ -57,21 +83,30 @@ endif()
 
 # 编译代码
 add_executable(lEver ${SOURCE_DATA} main.cpp)
+# target_compile_definitions(lEver PRIVATE _UNICODE UNICODE)
+target_link_libraries(lEver ${Boost_LIBRARIES})
 
 # 编译后事件
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    # 64-bit
-    if(CMAKE_HOST_UNIX)
-        # UNIX
-    elseif(CMAKE_HOST_WIN32)
-        # windows
+if(CMAKE_HOST_UNIX)
+    # UNIX
+elseif(CMAKE_HOST_WIN32)
+    # windows
 
-    else()
-        # 未进行兼容测试的系统
-    endif()
-
+    # resource.res
+    add_custom_command(TARGET lEver POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_SOURCE_DIR}/src/UI/Win/lib/res/resource.res
+            ${CMAKE_BINARY_DIR}/res/resource.res
+            COMMENT "Copying login.xml to build directory"
+            )
+    # login.xml
+    add_custom_command(TARGET lEver POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            ${CMAKE_SOURCE_DIR}/src/UI/Win/lib/res/login.xml
+            ${CMAKE_BINARY_DIR}/res/login.xml
+            COMMENT "Copying login.xml to build directory"
+            )
 else()
-    # 32-bit
-
+    # 未进行兼容测试的系统
 endif()
 

@@ -5,9 +5,15 @@
 #ifndef LEVER_XCLOGIN_H
 #define LEVER_XCLOGIN_H
 
-namespace Win{
-	class XCLogin {
+#include "lib/source_xcgui.h"
 
+namespace Win {
+	class XCLogin {
+	public:
+		void Show(HXCGUI hParent= nullptr);
+
+	private:
+		HWINDOW m_hWindow = nullptr;
 	};
 }
 
