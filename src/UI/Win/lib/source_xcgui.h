@@ -4,10 +4,15 @@
 
 #ifndef LEVER_SOURCE_XCGUI_H
 #define LEVER_SOURCE_XCGUI_H
+#include "windows.h"
+// #include "module_xcgui_class.h"
+#include "module_xcgui.h"
 
+#ifdef _WIN32
 namespace resource {
 	extern unsigned char XCGUI_dll[];
 	extern unsigned int XCGUI_dll_len;
 }
+#endif
 
 #endif //LEVER_SOURCE_XCGUI_H

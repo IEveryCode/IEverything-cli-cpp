@@ -16,10 +16,10 @@ namespace Base {
 	}
 
 	Config::Config(const std::string& fileName){
-		std::string data(ReadFileToString(fileName));
+		std::string data(Utils::Files::ReadFileToString(fileName));
 		if (data.empty()) {
 			data = CONFIG_ROW;
-			WriteStringToFile(fileName,data);
+			Utils::Files::WriteStringToFile(fileName,data);
 		}
 		m_jsonData = nlohmann::json::parse(data,nullptr, true, true);
 	}

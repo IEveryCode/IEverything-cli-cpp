@@ -5,7 +5,7 @@
 
 #if defined(__LP64__) || defined(_WIN64)
 // 64-bit code
-#include "x64/xcgui_x64.cpp"
+//#include "x64/xcgui_x64.cpp"
 #else
 // 32-bit code
 #include "x86/xcgui_x86.cpp"
