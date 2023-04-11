@@ -38,8 +38,8 @@ find_package(OpenSSL REQUIRED)
 # ===================icu=========================
 # ===================boost=========================
 find_package(Boost REQUIRED COMPONENTS
-        # regex
         filesystem
+        url
         )
 if(NOT Boost_FOUND)
     message("Not found Boost")

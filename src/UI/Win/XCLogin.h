@@ -13,7 +13,11 @@ namespace Win {
 		void Show(HXCGUI hParent= nullptr);
 
 	private:
+
+		int Event_Login(BOOL*intercept);
+
 		HWINDOW m_hWindow = nullptr;
+		HELE m_loginButton= nullptr;
 	};
 }
 

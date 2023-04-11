@@ -3,7 +3,13 @@
 //
 
 #include "XCLogin.h"
+#include "IEverAPI/IEverAPI.hpp"
 
+int Win::XCLogin::Event_Login(BOOL*intercept){
+	auto cli = Client::IEverAPI::Initialization("http://127.0.0.1:18080");
+
+	return 0;
+}
 
 void Win::XCLogin::Show(HXCGUI hParent) {
 	// 加载布局
@@ -15,4 +21,5 @@ void Win::XCLogin::Show(HXCGUI hParent) {
 
 	// 载入窗口
 	XWnd_Show(m_hWindow, true);
+
 }
