@@ -304,11 +304,11 @@ InputIterator extract_parameters(InputIterator begin, InputIterator end,
     std::pair<std::string,InputIterator> ret;
 
     /**
-     * LWS
+     * Client
      * token
-     * LWS
+     * Client
      * *(";" method-param)
-     * LWS
+     * Client
      * ,=loop again
      */
     while (cursor != end) {

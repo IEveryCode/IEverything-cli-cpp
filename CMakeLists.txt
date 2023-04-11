@@ -16,6 +16,12 @@ file(GLOB_RECURSE SOURCES_LIB lib/*.cpp)
 # 链接源文件表
 SET( SOURCE_DATA ${SOURCES_SRC} ${SOURCES_LIB})
 
+# http库开启ssl
+add_definitions(-DCPPHTTPLIB_OPENSSL_SUPPORT)
+# Find OpenSSL
+find_package(OpenSSL REQUIRED)
+
+
 
 # 链接库
 # ===================icu=========================
@@ -85,6 +91,8 @@ endif()
 add_executable(lEver ${SOURCE_DATA} main.cpp)
 # target_compile_definitions(lEver PRIVATE _UNICODE UNICODE)
 target_link_libraries(lEver ${Boost_LIBRARIES})
+# Link OpenSSL with your executable
+target_link_libraries(lEver OpenSSL::SSL OpenSSL::Crypto)
 
 # 编译后事件
 if(CMAKE_HOST_UNIX)

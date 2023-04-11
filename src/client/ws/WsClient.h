@@ -8,7 +8,7 @@
 #include <websocketpp/config/asio_no_tls_client.hpp>
 #include <websocketpp/client.hpp>
 
-namespace LWS {
+namespace Client {
   typedef websocketpp::client<websocketpp::config::asio_client> WSC;
   // 消息类型
   typedef websocketpp::config::asio_client::message_type::ptr message_ptr;

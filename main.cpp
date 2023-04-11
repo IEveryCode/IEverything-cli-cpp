@@ -4,13 +4,16 @@
 #include "winmain.h"
 
 int main() {
-  try{
+	try {
 
 		Win::Start();
 
-  }catch (std::runtime_error const & e) {
-	  MessagePop(0,e.what(),"错误");
-    //std::cout << e.what() << std::endl;
-  }
-  return 0;
+	} catch (std::runtime_error const &e) {
+		MessagePop(0, e.what(), "错误");
+	} catch (std::exception const &e) {
+		MessagePop(0, e.what(), "错误");
+	} catch (...) {
+		MessagePop(0, "未经处理的错误", "错误");
+	}
+	return 0;
 }

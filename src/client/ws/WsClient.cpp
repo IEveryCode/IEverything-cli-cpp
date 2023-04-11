@@ -4,52 +4,51 @@
 
 #include "WsClient.h"
 
-namespace LWS {
 
-  // Handlers
-  void WsClient::onOpen(WSC *c, websocketpp::connection_hdl hdl) {
-    is_connect = true;
-  }
+// Handlers
+void Client::WsClient::onOpen(WSC *c, websocketpp::connection_hdl hdl) {
+	is_connect = true;
+}
 
-  void WsClient::onFail(WSC *c, websocketpp::connection_hdl hdl) {
-    c->get_alog().write(websocketpp::log::alevel::app, "Connection Failed");
-  }
+void Client::WsClient::onFail(WSC *c, websocketpp::connection_hdl hdl) {
+	c->get_alog().write(websocketpp::log::alevel::app, "Connection Failed");
+}
 
-  void WsClient::onMessage(WSC *c, websocketpp::connection_hdl hdl, message_ptr msg) {
-    c->get_alog().write(websocketpp::log::alevel::app, "Received Reply: " + msg->get_payload());
-  }
+void Client::WsClient::onMessage(WSC *c, websocketpp::connection_hdl hdl, message_ptr msg) {
+	c->get_alog().write(websocketpp::log::alevel::app, "Received Reply: " + msg->get_payload());
+}
 
-  void WsClient::onClose(WSC *c, websocketpp::connection_hdl hdl) {
-    c->get_alog().write(websocketpp::log::alevel::app, "Connection Closed");
-  }
+void Client::WsClient::onClose(WSC *c, websocketpp::connection_hdl hdl) {
+	c->get_alog().write(websocketpp::log::alevel::app, "Connection Closed");
+}
 
-  WsClient::WsClient() { m_cli.init_asio(); }
+Client::WsClient::WsClient() { m_cli.init_asio(); }
 
-  WsClient::WsClient(const std::string &host) {
-    m_cli.init_asio();
-    SetConnConfig(host);
-  }
+Client::WsClient::WsClient(const std::string &host) {
+	m_cli.init_asio();
+	SetConnConfig(host);
+}
 
-  void WsClient::SetConnConfig(const std::string &host) {
-    m_host = host;
-    websocketpp::lib::error_code ec;
-    m_conn = m_cli.get_connection(host, ec);
-    m_conn->append_header("access-control-allow-origin", "*");
-    if (ec) {
-      //std::cout << "could not create connection because: " << ec.message() << std::endl;
-      throw websocketpp::exception(ec);
-    }
+void Client::WsClient::SetConnConfig(const std::string &host) {
+	m_host = host;
+	websocketpp::lib::error_code ec;
+	m_conn = m_cli.get_connection(host, ec);
+	m_conn->append_header("access-control-allow-origin", "*");
+	if (ec) {
+		//std::cout << "could not create connection because: " << ec.message() << std::endl;
+		throw websocketpp::exception(ec);
+	}
 
-  }
+}
 
-  void WsClient::SetAuth(const std::string &token) {
-    m_token = token;
-    m_conn->append_header("Authorization", "bearer " + token);
-  }
+void Client::WsClient::SetAuth(const std::string &token) {
+	m_token = token;
+	m_conn->append_header("Authorization", "bearer " + token);
+}
 
-  void WsClient::Run() {
-    m_cli.connect(m_conn);
-    m_cli.run();
+void Client::WsClient::Run() {
+	m_cli.connect(m_conn);
+	m_cli.run();
 //     client c;
 //     boost::asio::streambuf req;
 //     std::ostream req_stream(&req);
@@ -81,8 +80,8 @@ namespace LWS {
 //     ss << req_stream2.rdbuf();
 //     con->append_header("Sec-WebSocket-Protocol", ss.str());
 
-  }
 }
+
 
 
 
