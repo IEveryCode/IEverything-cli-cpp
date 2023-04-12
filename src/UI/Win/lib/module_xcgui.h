@@ -20,21 +20,21 @@
 * 炫彩界面库 - 官方网站 : http://www.xcgui.com
 *
 \**************************************************************************/
-#pragma once
-
-//3.3.8
-////////////输入输出///////////////////
-#ifndef  __in
-	#define  __in
-#endif
-
-#ifndef  __out
-	#define  __out
-#endif
-
-#ifndef  __in_out
-	#define  __in_out
-#endif
+//#pragma once
+//
+////3.3.8
+//////////////输入输出///////////////////
+//#ifndef  __in
+//	#define  __in
+//#endif
+//
+//#ifndef  __out
+//	#define  __out
+//#endif
+//
+//#ifndef  __in_out
+//	#define  __in_out
+//#endif
 
 
 #define  in_buffer_  //标识为内存指针, 非变量指针

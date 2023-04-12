@@ -6,6 +6,7 @@
 #include "utils/files.hpp"
 #include "XCLogin.h"
 #include "lib/source_xcgui.h"
+#include "IEverAPI/IEverAPI.h"
 
 namespace Win {
 	void Start() {
@@ -22,6 +23,9 @@ namespace Win {
 		XC_LoadResource(L"res/resource.res");
 		// 远程模式
 		if (conf->GetConfig("type", CONNECT_TYPE_REMOTE) == CONNECT_TYPE_REMOTE) {
+			conf->GetConfig("ssl",false)?
+			Client::IEverAPI::Initialization(("https://"+conf->GetConfig("host")).c_str()):
+			Client::IEverAPI::Initialization(("http://"+conf->GetConfig("host")).c_str());
 			Win::XCLogin loginWin;
 			loginWin.Show();
 		}

@@ -25,6 +25,11 @@ namespace Utils::Url {
 		std::string Fragment;
 	};
 
+	/*!
+	 * 解析url
+	 * @param url 链接
+	 * @return 返回解析后的Model
+	 */
 	Model Parse(const std::string &url) {
 		auto u = boost::url(url.c_str());
 		std::string tmp;
@@ -38,32 +43,6 @@ namespace Utils::Url {
 		result.Fragment = u.fragment();
 		return result;
 	}
-
-//	/*!
-//	 * 获取Url的协议
-//	 * @param url 被解析的Url
-//	 * @return 返回协议文本
-//	 */
-//	std::string GetProto(const std::string&url){
-//		auto u = boost::url(url.c_str());
-//		if (u.scheme()=="http"){
-//			return "http";
-//		}
-//		if (u.scheme()=="https"){
-//			return "https";
-//		}
-//		return u.scheme();
-//	};
-//
-//	/*!
-//	 * 解析链接的端口
-//	 * @param url 被解析的Url
-//	 * @return 返回链接端口号
-//	 */
-//	int GetPort(const std::string&url){
-//		std::string u = boost::url(url.c_str()).port();
-//		return atoi(u.c_str());
-//	};
 }
 
 #endif //LEVER_URL_HPP

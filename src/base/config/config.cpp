@@ -26,6 +26,7 @@ Base::Config::Config(const std::string &fileName) {
 
 nlohmann::json &Base::Config::GetProtoPtr() { return m_jsonData; }
 
+
 std::string Base::Config::GetConfig(const std::string &objName, const std::string &defaultStr) {
 	return m_jsonData.value<std::string>(objName, defaultStr);
 }
