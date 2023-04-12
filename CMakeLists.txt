@@ -72,6 +72,8 @@ elseif(CMAKE_HOST_WIN32)
 
     # 链接win库
     LINK_LIBRARIES(-lws2_32)
+    LINK_LIBRARIES(-lCrypt32)
+    LINK_LIBRARIES(-lAdvapi32)
     LINK_LIBRARIES(-lXCGUI)
 
     # 导入头

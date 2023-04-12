@@ -23,16 +23,23 @@ namespace Client {
 		IEverAPI(const std::string&host);
 
 		/*!
-		 * 登录后端
-		 * @param username
-		 * @param passwd
+		 * 用户登录
+		 * @param username 用户名
+		 * @param passwd    密码
 		 */
 		void Login(const std::string&username,const std::string&passwd);
 
 	private:
 		static IEverAPI* m_ptr;//单例指针
+
 		bool m_ssl=false;//是否启用ssl
 		std::string m_host;//服务器地址
+        int m_port=80;//服务器端口
+
+        std::string m_token;//登录token
+        std::string m_refreshToken;//刷新token
+
+        std::string GetUrl();
 	};
 }
 

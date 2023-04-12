@@ -7,7 +7,7 @@
 
 int Win::XCLogin::Event_Login(BOOL*intercept){
 	auto cli = Client::IEverAPI::Initialization("http://127.0.0.1:18080");
-
+    cli->Login("huiyi","123456789");
 	return 0;
 }
 
