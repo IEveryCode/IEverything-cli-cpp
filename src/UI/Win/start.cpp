@@ -18,14 +18,14 @@ namespace Win {
 			}
 		}
 		// 加载配置
-		auto conf = Base::Config::Initialization("config.json");
+		auto conf = Base::Config::Initialization(Base::Config::CONFIG_FILENAME);
 		XInitXCGUI(true);
 		XC_LoadResource(L"res/resource.res");
 		// 远程模式
 		if (conf->GetConfig("type", CONNECT_TYPE_REMOTE) == CONNECT_TYPE_REMOTE) {
 			conf->GetConfig("ssl",false)?
-			Client::IEverAPI::Initialization(("https://"+conf->GetConfig("host")).c_str()):
-			Client::IEverAPI::Initialization(("http://"+conf->GetConfig("host")).c_str());
+			Client::IEverAPI::Initialization("https://"+conf->GetConfig("host")):
+			Client::IEverAPI::Initialization("http://"+conf->GetConfig("host"));
 			Win::XCLogin loginWin;
 			loginWin.Show();
 		}

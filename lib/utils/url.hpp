@@ -5,7 +5,6 @@
 #ifndef LEVER_URL_HPP
 #define LEVER_URL_HPP
 
-#include <boost/url.hpp>
 #include <iostream>
 
 namespace Utils::Url {
@@ -30,19 +29,7 @@ namespace Utils::Url {
 	 * @param url 链接
 	 * @return 返回解析后的Model
 	 */
-	Model Parse(const std::string &url) {
-		auto u = boost::url(url.c_str());
-		std::string tmp;
-		Model result;
-		result.Proto = u.scheme();
-		tmp = u.port();
-		result.Port = stoi(tmp);
-		result.Host = u.host();
-		result.Path = u.path();
-		result.Query = u.query();
-		result.Fragment = u.fragment();
-		return result;
-	}
+	Model Parse(const std::string &url) ;
 }
 
 #endif //LEVER_URL_HPP

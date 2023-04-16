@@ -5,60 +5,124 @@
 #include "IEverAPI.h"
 #include "httplib.h"
 #include "utils/url.hpp"
-#include "nlohmann/json.hpp"
+#include "utils/coding.hpp"
 
-Client::IEverAPI *Client::IEverAPI::m_ptr = nullptr;
+namespace Client {
 
-Client::IEverAPI *Client::IEverAPI::Initialization(const std::string &host) {
-    if (m_ptr == nullptr) {
-        m_ptr = new Client::IEverAPI(host);
-    }
-    return m_ptr;
+	IEverAPI *IEverAPI::m_ptr = nullptr;
+
+	nlohmann::json IEverAPI::CheckResult(const std::string &respBody) {
+		auto respJson = nlohmann::json::parse(respBody);
+		// 检查返回值
+		if (respJson["error"] != 0) {
+			throw std::runtime_error(Utils::Coding::UTF82A(respJson["msg"].is_null() ? "网络错误" : respJson["msg"]));
+		}
+		return respJson["data"];
+	}
+
+	IEverAPI *IEverAPI::Initialization(const std::string &host = "") {
+		if (m_ptr == nullptr) {
+			m_ptr = new Client::IEverAPI(host);
+		}
+		return m_ptr;
+	}
+
+	IEverAPI::IEverAPI(const std::string &host) {
+		auto pUrl = Utils::Url::Parse(host);
+		m_host = pUrl.Host;
+		m_ssl = pUrl.Proto == "https";
+		m_port = pUrl.Port;
+	}
+
+	std::string IEverAPI::GetUrl() {
+		return m_ssl ? "https://" : "http://" + m_host +
+		                            ((m_port == 80 || m_port == 443) ? "" : ":" + std::to_string(m_port));
+	}
+
+	void IEverAPI::Login(const std::string &username, const std::string &passwd) {
+		static std::string path = "/api/user/login";
+		nlohmann::json json;
+		json["username"] = username;
+		json["passwd"] = passwd;
+
+		if (m_ssl) {
+			httplib::SSLClient cli(m_host, m_port);
+			auto res = cli.Post(path, json.dump(), "application/json");
+			if (res.error() != httplib::Error::Success) {
+				throw std::runtime_error(httplib::to_string(res.error()));
+			}
+			json = CheckResult(res->body);
+		} else {
+			httplib::Client cli(m_host, m_port);
+			auto res = cli.Post(path, json.dump(), "application/json");
+			if (res.error() != httplib::Error::Success) {
+				throw std::runtime_error(httplib::to_string(res.error()));
+			}
+			json = CheckResult(res->body);
+		}
+		// 保存token
+		m_token = json["token"];
+		m_refreshToken = json["refreshToken"];
+		m_ifLogin = true;
+		if (!m_checkTokenThread) {
+			// 创建一个线程轮询检查token是否过期
+			m_checkTokenThread = new std::thread([this]() {
+				std::cout<<"check token:begin"<<std::endl;
+				while (true) {
+
+					std::this_thread::sleep_for(std::chrono::seconds(30));
+					try {
+						IEverAPI::Initialization()->CheckToken();
+						std::cout<<"check token:ok"<<std::endl;
+					} catch (std::exception &e) {
+						std::cout<<"check token:"<<e.what()<<std::endl;
+						this->Logout();
+					}
+				}
+
+			});
+		}
+	}
+
+	void IEverAPI::Logout() {
+		// 先使用refreshToken刷新token
+		// TODO: 待完成
+		// ...
+		m_ifLogin = false;
+		// token过期
+		m_ifLogin = false;
+		// TODO: 这应该是向主窗口发送消息，让主窗口弹出登录窗口
+
+	}
+
+	bool IEverAPI::CheckToken(bool exception) {
+		static std::string path = "/api/user/check_token";
+		try {
+			if (m_ssl) {
+				httplib::SSLClient cli(m_host, m_port);
+				auto res = cli.Get(path);
+				if (res.error() != httplib::Error::Success) {
+					throw std::runtime_error(httplib::to_string(res.error()));
+				}
+				CheckResult(res->body);
+			} else {
+				httplib::Client cli(m_host, m_port);
+				auto res = cli.Get(path);
+				if (res.error() != httplib::Error::Success) {
+					throw std::runtime_error(httplib::to_string(res.error()));
+				}
+				CheckResult(res->body);
+			}
+		} catch (std::exception &e) {
+			if (exception) {
+				throw e;
+			}
+			return false;
+		}
+		return true;
+	}
+
+
 }
 
-Client::IEverAPI::IEverAPI(const std::string &host) {
-    auto pUrl = Utils::Url::Parse(host);
-    m_host = pUrl.Host;
-    m_ssl = pUrl.Proto == "https";
-    m_port = pUrl.Port;
-}
 
-std::string Client::IEverAPI::GetUrl() {
-    return m_ssl ? "https://" : "http://" + m_host +
-                                ((m_port == 80 || m_port == 443) ? "" : ":" + std::to_string(m_port));
-}
-
-void Client::IEverAPI::Login(const std::string &username, const std::string &passwd) {
-    static std::string path = "/api/user/login";
-    nlohmann::json json;
-    json["username"] = username;
-    json["passwd"] = passwd;
-    try {
-        if (m_ssl) {
-            httplib::SSLClient cli(m_host, m_port);
-            auto res = cli.Post(path, json.dump(), "application/json");
-            if(!res){
-                throw std::runtime_error("网络错误");
-            }
-            json = nlohmann::json::parse(res->body, nullptr, true, false);
-        } else {
-            httplib::Client cli(m_host, m_port);
-            auto res = cli.Post(path, json.dump(), "application/json");
-            if(!res){
-                throw std::runtime_error("网络错误");
-            }
-            json = nlohmann::json::parse(res->body, nullptr, true, false);
-        }
-        // 检查返回值
-        if (json["err"] != 0) {
-            throw std::runtime_error(json["msg"] == "null" ? "未知错误" : json["msg"]);
-        }
-        // 保存token
-        m_token = json["data"]["token"];
-        m_refreshToken = json["data"]["refreshToken"];
-
-    } catch (...) {
-        throw std::runtime_error("网络错误");
-    }
-
-}

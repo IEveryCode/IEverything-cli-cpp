@@ -4,7 +4,7 @@
 <windowUI center="true" content="登录" rect="20,20,345,318" showT="true" windowStyle="2031">
 	<shapeText content="账号" layout.height="20" layout.width="auto" rect="107,78,30,20" showT="true" expandT="true" />
 	<shapeText content="密码" layout.height="20" layout.width="auto" rect="107,139,30,20" showT="true" expandT="true" />
-	<editUI id="10011" rect="107,104,131,20" showT="true" expandT="true" />
+	<editUI content="huiyi" id="10011" rect="107,104,131,20" showT="true" expandT="true" />
 	<buttonUI content="登录" id="10001" rect="146,217,52,25" showT="true" expandT="true" />
-	<editUI id="10012" rect="107,165,131,20" showT="true" expandT="true" />
+	<editUI content="123456789" id="10012" rect="107,165,131,20" showT="true" expandT="true" />
 </windowUI>

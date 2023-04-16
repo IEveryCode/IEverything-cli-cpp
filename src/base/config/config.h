@@ -12,12 +12,14 @@
 namespace Base {
 	class Config {
 	public:
+		static const char* CONFIG_FILENAME;
+
 		/*!
 		 * 初始化配置单例,配置方案为
 		 * @param fileName json配置文件名
 		 * @throw
 		 */
-		static Config* Initialization(const std::string& fileName);
+		static Config* Initialization(const std::string& fileName="");
 
 		/*!
 		 *

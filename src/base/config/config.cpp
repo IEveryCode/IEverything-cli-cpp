@@ -7,6 +7,7 @@
 
 
 Base::Config *Base::Config::m_init = nullptr;
+const char* Base::Config::CONFIG_FILENAME="config.json";
 
 Base::Config *Base::Config::Initialization(const std::string &fileName) {
 	if (m_init == nullptr) {
