@@ -19,7 +19,13 @@ namespace Base {
 		 * @param fileName json配置文件名
 		 * @throw
 		 */
-		static Config* Initialization(const std::string& fileName="");
+		static Config* Initialization(const std::string& fileName);
+
+		/*!
+	 * 获取单例
+	 * @return 单例指针
+	 */
+		static Config* GetInstance();
 
 		/*!
 		 *
@@ -51,6 +57,11 @@ namespace Base {
 		 */
 		std::string GetConfig(const std::string& objName,const std::string& defaultStr="");
 
+		/*!
+		 * 保存配置
+		 * 错误处理：如果保存失败，会抛出异常
+		 */
+		void Save();
 
 	private:
 		static Config* m_init;

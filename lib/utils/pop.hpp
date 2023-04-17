@@ -6,18 +6,33 @@
 
 #include "baseinclude.h"
 #include "string"
-/*!
- * 抽象化弹窗函数
+namespace Utils{
+	/*!
+ * 信息弹窗函数
  * @param hWnd
  * @param content
  * @param title
- * @param type
  */
-inline void MessagePop(ULONG64 hWnd,const std::string&content,const std::string& title,UINT type=0){
-	#ifdef _WIN32
-		MessageBoxA(HWND(hWnd),content.c_str(),title.c_str(),type);
-	#else
-	#endif
+	inline void PopMessage(ULONG64 hWnd,const std::string&content,const std::string& title="信息"){
+		#ifdef _WIN32
+		MessageBoxA(HWND(hWnd),content.c_str(),title.c_str(),MB_OK);
+		#else
+		#endif
+	}
+	/*!
+* 错误弹窗函数
+* @param hWnd
+* @param content
+* @param title
+*/
+	inline void PopFail(ULONG64 hWnd,const std::string&content,const std::string& title="错误"){
+		#ifdef _WIN32
+		MessageBoxA(HWND(hWnd),content.c_str(),title.c_str(),MB_ERR_INVALID_CHARS);
+		#else
+		#endif
+	}
+
 }
+
 
 #endif

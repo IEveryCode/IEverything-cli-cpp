@@ -21,6 +21,12 @@ namespace Client {
 		 */
 		static IEverAPI *Initialization(const std::string &host);
 
+		/*!
+		 * 获取实例
+		 * @return 返回实例对象指针
+		 */
+		static IEverAPI *GetInstance();
+
 		IEverAPI(const std::string &host);
 
 		/*!
@@ -42,7 +48,11 @@ namespace Client {
 		 */
 		bool CheckToken(bool exception=false);
 
-
+		/*!
+		 * 是否已经登录
+		 * @return 已登录返回true
+		 */
+		bool IfLogin();
 
 	private:
 		static IEverAPI *m_ptr;//单例指针

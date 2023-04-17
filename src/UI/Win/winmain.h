@@ -4,11 +4,13 @@
 
 #ifndef LEVER_WINMAIN_H
 #define LEVER_WINMAIN_H
+#include "XCMain.h"
+#include "XCLogin.h"
 
 namespace Win {
-	/*!
-	 * 抽象化的窗口接口函数
-	 */
+
+	extern XCMain g_wMain;
+
 	void Start();
 }
 

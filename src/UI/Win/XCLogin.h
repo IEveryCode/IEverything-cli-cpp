@@ -10,16 +10,21 @@
 namespace Win {
 	class XCLogin {
 	public:
-		void Show(HXCGUI hParent= nullptr);
-
+		/*!
+		 * 创建窗口
+		 * @param hParent 父窗口句柄
+		 */
+		void Create(HXCGUI hParent= nullptr);
+		void Show(bool show=true);
 	private:
-
+		int Event_Close(BOOL* intercept);
 		int Event_Login(BOOL*intercept);
 
-		HWINDOW m_hWindow = nullptr;//窗口句柄
-		HELE m_loginButton= nullptr;//登录按钮
-		HELE m_loginUsername= nullptr;//登录用户名编辑框
-		HELE m_loginPassword= nullptr;//登录密码编辑框
+		static HWINDOW m_hWindow;//窗口句柄
+		static HWINDOW m_hParent;//父窗口句柄
+		static HELE m_loginButton;//登录按钮
+		static HELE m_loginUsername;//登录用户名编辑框
+		static HELE m_loginPassword;//登录密码编辑框
 	};
 }
 

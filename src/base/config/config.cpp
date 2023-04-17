@@ -5,30 +5,45 @@
 #include "config.h"
 #include "utils/files.hpp"
 
+namespace Base {
+	Config *Config::m_init = nullptr;
+	const char *Config::CONFIG_FILENAME = "config.json";
 
-Base::Config *Base::Config::m_init = nullptr;
-const char* Base::Config::CONFIG_FILENAME="config.json";
+	Config *Config::GetInstance() { return m_init; }
 
-Base::Config *Base::Config::Initialization(const std::string &fileName) {
-	if (m_init == nullptr) {
-		m_init = new Config(fileName);
+	Config *Config::Initialization(const std::string &fileName) {
+		// 如果已经初始化过了，直接返回
+		if (m_init == nullptr) {
+			// 如果没有初始化过，初始化
+			m_init = new Config(fileName);
+		}
+		return m_init;
 	}
-	return m_init;
-}
 
-Base::Config::Config(const std::string &fileName) {
-	std::string data(Utils::Files::ReadFileToString(fileName));
-	if (data.empty()) {
-		data = CONFIG_ROW;
-		Utils::Files::WriteStringToFile(fileName, data);
+	Config::Config(const std::string &fileName) {
+		// 读取配置文件
+		std::string data(Utils::Files::ReadFileToString(fileName));
+		// 如果配置文件为空，写入默认配置
+		if (data.empty()) {
+			// 默认配置
+			data = CONFIG_ROW;
+			// 写入配置文件
+			Utils::Files::WriteStringToFile(fileName, data);
+		}
+		// 解析配置文件
+		m_jsonData = nlohmann::json::parse(data, nullptr, true, true);
 	}
-	m_jsonData = nlohmann::json::parse(data, nullptr, true, true);
-}
 
-nlohmann::json &Base::Config::GetProtoPtr() { return m_jsonData; }
+	nlohmann::json &Config::GetProtoPtr() { return m_jsonData; }
 
 
-std::string Base::Config::GetConfig(const std::string &objName, const std::string &defaultStr) {
-	return m_jsonData.value<std::string>(objName, defaultStr);
+	std::string Config::GetConfig(const std::string &objName, const std::string &defaultStr) {
+		return m_jsonData.value<std::string>(objName, defaultStr);
+	}
+
+	void Config::Save() {
+		Utils::Files::WriteStringToFile(Config::CONFIG_FILENAME, m_jsonData.dump());
+	}
+
 }
 

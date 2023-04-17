@@ -9,11 +9,11 @@ int main() {
 		Win::Start();
 
 	} catch (std::runtime_error const &e) {
-		MessagePop(0, e.what(), "错误");
+		Utils::PopFail(0, e.what(), "错误");
 	} catch (std::exception const &e) {
-		MessagePop(0, e.what(), "错误");
+		Utils::PopFail(0, e.what(), "错误");
 	} catch (...) {
-		MessagePop(0, "未经处理的错误", "错误");
+		Utils::PopFail(0, "未经处理的错误", "错误");
 	}
 	return 0;
 }

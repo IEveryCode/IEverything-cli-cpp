@@ -5,8 +5,8 @@
 #ifndef LEVER_SOURCE_XCGUI_H
 #define LEVER_SOURCE_XCGUI_H
 #include "windows.h"
-// #include "module_xcgui_class.h"
 #include "module_xcgui.h"
+//#include "module_xcgui_class.h"
 
 #ifdef _WIN32
 namespace resource {

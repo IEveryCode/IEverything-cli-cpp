@@ -20,7 +20,9 @@ namespace Client {
 		return respJson["data"];
 	}
 
-	IEverAPI *IEverAPI::Initialization(const std::string &host = "") {
+	IEverAPI *IEverAPI::GetInstance(){return m_ptr;}
+
+	IEverAPI *IEverAPI::Initialization(const std::string &host) {
 		if (m_ptr == nullptr) {
 			m_ptr = new Client::IEverAPI(host);
 		}
@@ -67,15 +69,15 @@ namespace Client {
 		if (!m_checkTokenThread) {
 			// 创建一个线程轮询检查token是否过期
 			m_checkTokenThread = new std::thread([this]() {
-				std::cout<<"check token:begin"<<std::endl;
+				std::cout << "check token:begin" << std::endl;
 				while (true) {
 
 					std::this_thread::sleep_for(std::chrono::seconds(30));
 					try {
-						IEverAPI::Initialization()->CheckToken();
-						std::cout<<"check token:ok"<<std::endl;
+						IEverAPI::GetInstance()->CheckToken();
+						std::cout << "check token:ok" << std::endl;
 					} catch (std::exception &e) {
-						std::cout<<"check token:"<<e.what()<<std::endl;
+						std::cout << "check token:" << e.what() << std::endl;
 						this->Logout();
 					}
 				}
@@ -83,6 +85,8 @@ namespace Client {
 			});
 		}
 	}
+
+	bool IEverAPI::IfLogin() { return m_ifLogin; }
 
 	void IEverAPI::Logout() {
 		// 先使用refreshToken刷新token

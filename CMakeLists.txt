@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+﻿cmake_minimum_required(VERSION 3.25)
 project(lEver)
 
 # C++17规范
@@ -54,6 +54,7 @@ elseif(CMAKE_HOST_WIN32)
     # WINDOWS
     # 解决中文乱码
     add_compile_options(-fexec-charset=GBK -finput-charset=UTF-8)
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -fexec-charset=GBK")
     # 在gcc/g++或ld中加上这个参数, 就可以不用libgcc_s_dw2-1.dll
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libgcc")
     # 在g++或ld中加上这个参数, 就可以不用libstdc++-6.dll

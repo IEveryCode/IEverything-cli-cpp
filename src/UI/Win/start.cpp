@@ -1,14 +1,16 @@
 //
 // Created by HuiYi on 2023/4/9.
 //
+#include <thread>
 #include "winmain.h"
 #include "config/config.h"
 #include "utils/files.hpp"
-#include "XCLogin.h"
 #include "lib/source_xcgui.h"
-#include "IEverAPI/IEverAPI.h"
+
 
 namespace Win {
+	XCMain g_wMain;
+
 	void Start() {
 		// 写出相关文件
 		if (!Utils::Files::FileIfExists("xcgui.dll")) {
@@ -18,17 +20,12 @@ namespace Win {
 			}
 		}
 		// 加载配置
-		auto conf = Base::Config::Initialization(Base::Config::CONFIG_FILENAME);
+		Base::Config::Initialization(Base::Config::CONFIG_FILENAME);
 		XInitXCGUI(true);
 		XC_LoadResource(L"res/resource.res");
-		// 远程模式
-		if (conf->GetConfig("type", CONNECT_TYPE_REMOTE) == CONNECT_TYPE_REMOTE) {
-			conf->GetConfig("ssl",false)?
-			Client::IEverAPI::Initialization("https://"+conf->GetConfig("host")):
-			Client::IEverAPI::Initialization("http://"+conf->GetConfig("host"));
-			Win::XCLogin loginWin;
-			loginWin.Show();
-		}
+
+
+		g_wMain.Create();
 
 		XRunXCGUI();
 		XExitXCGUI();
