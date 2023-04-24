@@ -1,7 +1,7 @@
 //
 // Created by HuiYi on 2023/4/17.
 //
-
+#include <iostream>
 #include "XCMain.h"
 #include "XCLogin.h"
 #include "IEverAPI/IEverAPI.h"
@@ -47,10 +47,18 @@ namespace Win {
 	}
 
 	int XCMain::OnClose(BOOL*){
-		Base::ClipboardMonitor::Free();
+		Base::Clipboar::ClipboardMonitor::Free();
 		return 0;
 	}
-	void XCMain::StartListening(){
-		auto cli = Base::ClipboardMonitor::Initialization((ULONG64) XWnd_GetHWND(m_hWindow));
+
+	void ClipboarCallBack(const Base::Clipboar::ClipboardData&data){
+		std::cout<<data.Data<<std::endl;
 	}
+
+	void XCMain::StartListening(){
+		auto cli = Base::Clipboar::ClipboardMonitor::Initialization(
+				(ULONG64) XWnd_GetHWND(m_hWindow),
+				ClipboarCallBack);
+	}
+
 }

@@ -1,95 +1,68 @@
 //
 // Created by HuiYi on 2023/4/17.
 //
-#include <chrono>
+
 #include <thread>
 #include "iostream"
 #include "ClipboardMonitor.h"
 #include "utils/pop.hpp"
+#include "utils/coding.hpp"
+#ifdef _WIN32
+#include "ClipboardGetDataWindows.hpp"
+#else
+#endif
 
 
-namespace Base {
+namespace Base::Clipboar {
+	ClipboardData::ClipboardData(const std::string &a) {
+		Type = ClipboarDataType_Text;
+		Data = a;
+	};
 
-	#ifdef _WIN32
-	bool openClipboard(){
-		bool isopen = OpenClipboard ((HWND)ClipboardMonitor::GetInstance()->GetHWND());
-		int forMax = 10;
-		for (int i = 0; i < forMax; ++i) {
-			isopen = OpenClipboard ((HWND)ClipboardMonitor::GetInstance()->GetHWND());
-			if (isopen){
-				break;
-			}
-			std::this_thread::sleep_for(std::chrono::milliseconds (100));
-		}
-		return isopen;
-	}
-	std::wstring ClipboardGetTextW () {
-		std::wstring result ;
-		if (openClipboard()) {
-			if(IsClipboardFormatAvailable (CF_UNICODETEXT)){
-				auto hClip = GetClipboardData (CF_UNICODETEXT);
-				if (hClip) {
-					auto pchData = GlobalLock (hClip);
-					if(pchData){
-						result = (wchar_t*)pchData;
-					}
-					GlobalUnlock (hClip);
-				}
-			}
-			CloseClipboard ();
-		}
-		return result;
+	ClipboardData::ClipboardData(const std::wstring &a) {
+		Type = ClipboarDataType_Text;
+		Data = Utils::Coding::W2A(a);
 	}
 
-	std::string ClipboardGetTextA () {
-		std::string result ;
-		if (openClipboard()) {
-			if(IsClipboardFormatAvailable (CF_TEXT)){
-				auto hClip = GetClipboardData (CF_TEXT);
-				if (hClip) {
-					auto pchData = GlobalLock (hClip);
-					if(pchData){
-						result = (char*)pchData;
-					}
-					GlobalUnlock (hClip);
-				}
-			}
-			CloseClipboard ();
-		}
-		return result;
+	ClipboardData &ClipboardData::operator=(const std::wstring &other) {
+		Type = ClipboarDataType_Text;
+		Data = Utils::Coding::W2A(other);
+		return *this;
 	}
 
-	LONG_PTR m_oldPtr = 0;
-
-	LRESULT WINAPI ClipboardEventMessageProcess(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-		if (uMsg == WM_CLIPBOARDUPDATE) {
-			CoInitialize(NULL);
-			std::wcout<<ClipboardGetTextW() << std::endl;
-			std::cout << "剪切板被改变" << std::endl;
-			CoUninitialize();
-		}
-		return CallWindowProcW((WNDPROC) m_oldPtr, hwnd, uMsg, wParam, lParam);
+	ClipboardData &ClipboardData::operator=(const std::string &other) {
+		Type = ClipboarDataType_Text;
+		Data = other;
+		return *this;
 	}
 
+	bool ClipboardData::operator==(const std::string &other) const { return Data == other; }
 
-	#else
-	#endif
+	bool ClipboardData::operator==(const ClipboardData &other) const { return Type == other.Type && Data == other.Data; }
+
+	bool ClipboardData::operator!=(const ClipboardData &other) const { return !(*this == other); }
+
 
 	ULONG64 ClipboardMonitor::m_hWnd = 0;
 	ClipboardMonitor *ClipboardMonitor::m_initPtr = nullptr;
+	ClipboardEventCallback ClipboardMonitor::m_callFunc = nullptr;
 
-	ClipboardMonitor *ClipboardMonitor::Initialization(ULONG64 hwnd) {
+	ClipboardMonitor *ClipboardMonitor::Initialization(ULONG64 hWnd, ClipboardEventCallback callFunc) {
 		if (m_initPtr == nullptr) {
-			m_initPtr = new ClipboardMonitor(hwnd);
+			m_initPtr = new ClipboardMonitor(hWnd, callFunc);
 		}
 		return m_initPtr;
 	}
 
 	ClipboardMonitor *ClipboardMonitor::GetInstance() { return m_initPtr; }
 
-	ULONG64 ClipboardMonitor::GetHWND(){return m_hWnd;}
+	ULONG64 ClipboardMonitor::GetHWND() { return m_hWnd; }
 
-	ClipboardMonitor::ClipboardMonitor(ULONG64 hwnd) {
+	ClipboardEventCallback ClipboardMonitor::GetCallFunc() {
+		return m_callFunc;
+	}
+
+	ClipboardMonitor::ClipboardMonitor(ULONG64 hwnd, ClipboardEventCallback callFunc) {
 		m_hWnd = hwnd;
 		auto rBool = AddClipboardFormatListener((HWND) hwnd);
 		if (!rBool) {
@@ -101,6 +74,7 @@ namespace Base {
 			Utils::PopFail(hwnd, "注册监听器失败!", "错误");
 			exit(-1);
 		}
+		m_callFunc = callFunc;
 	}
 
 	void ClipboardMonitor::Free() {
