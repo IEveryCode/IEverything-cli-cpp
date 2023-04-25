@@ -3,11 +3,14 @@
 //
 
 #include "IEverAPI.h"
+#include "ws/WsClient.h"
 #include "httplib.h"
 #include "utils/url.hpp"
 #include "utils/coding.hpp"
 
 namespace Client {
+
+	std::shared_ptr<WsClient> g_WsClient;
 
 	IEverAPI *IEverAPI::m_ptr = nullptr;
 
@@ -20,7 +23,7 @@ namespace Client {
 		return respJson["data"];
 	}
 
-	IEverAPI *IEverAPI::GetInstance(){return m_ptr;}
+	IEverAPI *IEverAPI::GetInstance() { return m_ptr; }
 
 	IEverAPI *IEverAPI::Initialization(const std::string &host) {
 		if (m_ptr == nullptr) {
@@ -67,11 +70,11 @@ namespace Client {
 		m_refreshToken = json["refreshToken"];
 		m_ifLogin = true;
 		if (!m_checkTokenThread) {
+
 			// 创建一个线程轮询检查token是否过期
 			m_checkTokenThread = new std::thread([this]() {
 				std::cout << "check token:begin" << std::endl;
 				while (true) {
-
 					std::this_thread::sleep_for(std::chrono::seconds(30));
 					try {
 						IEverAPI::GetInstance()->CheckToken();
@@ -81,7 +84,22 @@ namespace Client {
 						this->Logout();
 					}
 				}
+			});
 
+		}
+		if (!m_connectWsThread) {
+			// 创建一个连接交互线程
+			m_connectWsThread = new std::thread([this]() {
+				std::stringstream wsUrl;
+				wsUrl << "ws://" << m_host;
+				if (m_port != 80 && m_port != 443) {
+					wsUrl << ":" << std::to_string(m_port);
+				}
+				wsUrl << "/api/clipbrd/connect";
+				std::cout << "connect: " << wsUrl.str() << std::endl;
+				g_WsClient.reset(new WsClient(wsUrl.str()));
+				g_WsClient->SetAuth(m_token);
+				g_WsClient->Run();
 			});
 		}
 	}

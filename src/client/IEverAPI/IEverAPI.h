@@ -65,6 +65,7 @@ namespace Client {
 		std::string m_refreshToken;//刷新token
 		bool m_ifLogin = false;//是否登录
 		std::thread* m_checkTokenThread = nullptr;//登录后轮询线程
+		std::thread* m_connectWsThread = nullptr;//登录后WS线程
 
 		std::string GetUrl();
 

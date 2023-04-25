@@ -6,20 +6,22 @@
 
 
 // Handlers
-void Client::WsClient::onOpen(WSC *c, websocketpp::connection_hdl hdl) {
+void Client::WsClient::onOpen(websocketpp::connection_hdl &hdl) {
 	is_connect = true;
+	std::cout << "WS Open" << std::endl;
 }
 
-void Client::WsClient::onFail(WSC *c, websocketpp::connection_hdl hdl) {
-	c->get_alog().write(websocketpp::log::alevel::app, "Connection Failed");
+void Client::WsClient::onFail(websocketpp::connection_hdl &hdl) {
+	//c->get_alog().write(websocketpp::log::alevel::app, "Connection Failed");
 }
 
-void Client::WsClient::onMessage(WSC *c, websocketpp::connection_hdl hdl, message_ptr msg) {
-	c->get_alog().write(websocketpp::log::alevel::app, "Received Reply: " + msg->get_payload());
+void Client::WsClient::onMessage(websocketpp::connection_hdl &hdl, message_ptr &msg) {
+	//c->get_alog().write(websocketpp::log::alevel::app, "Received Reply: " + msg->get_payload());
+	std::cout << msg->get_payload() << std::endl;
 }
 
-void Client::WsClient::onClose(WSC *c, websocketpp::connection_hdl hdl) {
-	c->get_alog().write(websocketpp::log::alevel::app, "Connection Closed");
+void Client::WsClient::onClose(websocketpp::connection_hdl &hdl) {
+	//c->get_alog().write(websocketpp::log::alevel::app, "Connection Closed");
 }
 
 Client::WsClient::WsClient() { m_cli.init_asio(); }
@@ -41,12 +43,34 @@ void Client::WsClient::SetConnConfig(const std::string &host) {
 
 }
 
+void Client::WsClient::OnValidate(websocketpp::connection_hdl& hdl){
+	std::cout << "OnValidate" << std::endl;
+}
+
 void Client::WsClient::SetAuth(const std::string &token) {
 	m_token = token;
 	m_conn->append_header("Authorization", "bearer " + token);
 }
 
 void Client::WsClient::Run() {
+	// m_cli.set_close_handler();
+	m_cli.set_open_handler([this](websocketpp::connection_hdl hdl) {
+		onOpen(hdl);
+	});
+	m_cli.set_close_handler([this](websocketpp::connection_hdl hdl) {
+		onClose(hdl);
+	});
+	m_cli.set_fail_handler([this](websocketpp::connection_hdl hdl) {
+		onFail(hdl);
+	});
+	m_cli.set_message_handler([this](websocketpp::connection_hdl hdl, message_ptr msg) {
+		onMessage(hdl, msg);
+	});
+	m_cli.set_validate_handler([this](websocketpp::connection_hdl hdl)->bool {
+		OnValidate(hdl);
+	});
+
+	m_conn->append_header("device-id", "client1");
 	m_cli.connect(m_conn);
 	m_cli.run();
 //     client c;
